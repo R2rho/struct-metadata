@@ -16,7 +16,10 @@ pub use struct_metadata_derive::{Described, MetadataKind};
 
 use std::collections::HashMap;
 use std::collections::VecDeque;
-use std::fs::metadata;
+// use std::fs::metadata;
+
+#[cfg(feature = "nalgebra")]
+pub mod nalgebra;
 
 /// Information about a type along with its metadata and doc-strings.
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -343,16 +346,7 @@ impl<M: Default, K: Described<M>, V: Described<M>> Described<M> for serde_json::
     }
 }
 
-#[cfg(feature = "nalgebra")]
-impl<M: Default, T: Described<M>> Described<M> for nalgebra::DVector<T> {
-    fn metadata() -> Descriptor<M> {
-        Descriptor { 
-            docs: None,
-            metadata: M::default(),
-            kind: Kind::Sequence(Box::new(T::metadata())),
-        }
-    }
-}
+
 
 /// Trait used to describe metadata field propagation
 pub trait MetadataKind: Default {
