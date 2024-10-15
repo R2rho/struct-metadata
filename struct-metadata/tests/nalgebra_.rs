@@ -126,3 +126,50 @@ fn transformation_metadata_with_meta() {
         panic!("Expected Transformation to be described as a struct");
     }
 }
+
+
+/// # LinearSegment
+/// A linear segment with start and end points represented as `Isometry3<f32>`.
+#[derive(Debug, PartialEq, Described)]
+#[metadata_type(Meta)]
+#[metadata(display_name = "Linear Segment", description = "A linear segment with start and end points")]
+pub struct LinearSegment {
+    /// The start point of the segment
+    #[metadata(display_name = "Start Point", description = "The start point of the segment")]
+    pub start: Isometry3<f32>,
+    
+    /// The end point of the segment
+    #[metadata(display_name = "End Point", description = "The end point of the segment")]
+    pub end: Isometry3<f32>,
+}
+
+#[test]
+fn linear_segment_metadata() {
+    let data: Descriptor<Meta> = LinearSegment::metadata();
+    
+    // Test struct-level metadata
+    assert_eq!(data.metadata.display_name, "Linear Segment");
+    assert_eq!(data.metadata.description, "A linear segment with start and end points");
+    
+    if let Kind::Struct { children, .. } = data.kind {
+        // Check the start field
+        let start_entry = children.iter().find(|e| e.label == "start").expect("Start metadata not found");
+        assert_eq!(start_entry.metadata.display_name, "Start Point");
+        assert_eq!(start_entry.metadata.description, "The start point of the segment");
+        match start_entry.type_info.kind {
+            Kind::Struct { .. } => {}, // Expected to be a struct (Isometry3 is described as a struct)
+            _ => panic!("Expected start point to be described as a struct"),
+        }
+        
+        // Check the end field
+        let end_entry = children.iter().find(|e| e.label == "end").expect("End metadata not found");
+        assert_eq!(end_entry.metadata.display_name, "End Point");
+        assert_eq!(end_entry.metadata.description, "The end point of the segment");
+        match end_entry.type_info.kind {
+            Kind::Struct { .. } => {}, // Expected to be a struct (Isometry3 is described as a struct)
+            _ => panic!("Expected end point to be described as a struct"),
+        }
+    } else {
+        panic!("Expected LinearSegment to be described as a struct");
+    }
+}

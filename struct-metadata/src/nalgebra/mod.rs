@@ -24,16 +24,6 @@ use crate::{Described, Descriptor, Kind, Entry};
 use nalgebra::{ArrayStorage, Const, Isometry3, Scalar, Vector3, Rotation3};
 use nalgebra::{Matrix, Dim, Storage};
 
-// impl<M: Default, T: Described<M>> Described<M> for nalgebra::DVector<T> {
-//     fn metadata() -> Descriptor<M> {
-//         Descriptor { 
-//             docs: None,
-//             metadata: M::default(),
-//             kind: Kind::Sequence(Box::new(T::metadata())),
-//         }
-//     }
-// }
-
 impl<M: Default, T: Described<M> + Scalar, R: Dim, C: Dim, S: Storage<T, R, C>> crate::Described<M> for Matrix<T, R, C, S> {
     fn metadata() -> Descriptor<M> {
         Descriptor {
